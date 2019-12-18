@@ -1,0 +1,32 @@
+/*@!Encoding:1252*/
+includes
+{
+  
+}
+
+variables
+{
+  int counter;
+  message message42 msg42;
+  msTimer watchdog;
+  
+}
+
+on start {
+  setTimer(watchdog, 2000);
+}
+
+on message message123
+{
+  counter++;
+  output(msg42);
+  write("Nachricht von 0x123 / Aktuelle Anzahl: %d", counter);
+  setTimer(watchdog, 2000);
+}
+
+
+on timer watchdog {
+  write("WARNUNG, innerhalb von 2 sekunden keine NAchricht erhalten");
+  setTimer(watchdog, 2000);
+}
+

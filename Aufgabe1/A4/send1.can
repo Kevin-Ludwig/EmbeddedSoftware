@@ -1,0 +1,23 @@
+/*@!Encoding:1252*/
+includes
+{
+  
+}
+
+variables
+{
+  msTimer timer123;
+  message message123 msg123;
+}
+
+on start
+{
+  setTimer(timer123, 100);
+}
+
+on timer timer123
+{
+  output(msg123);
+  setTimer(timer123, 100);
+}
+

@@ -1,0 +1,26 @@
+/*@!Encoding:1252*/
+includes
+{
+  
+}
+
+variables
+{
+//  msTimer timer123;
+  message message123 msg123;
+}
+
+on key 's'
+{
+  output(msg123);
+}
+
+
+on envvar send
+{
+  if (@send == 1)
+    output(msg123);
+}
+
+
+

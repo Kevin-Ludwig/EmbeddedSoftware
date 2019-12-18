@@ -1,0 +1,147 @@
+/*@!Encoding:1252*/
+
+variables {
+  
+  message ACC_Brake accBrake;
+  message ACC_Accelerate accAccelerate;
+  message ACC_Slowdown accSlowdown;
+  message ACC_Error accError;
+  message Display_State displayState;
+  
+  // ACC init
+  byte accState = 0;
+  int accSpeed = 150;
+  int accDistance = 20; 
+  
+  // Car1
+  int car1Speed;
+  byte car1Lane;
+
+  // Car2
+  int  car2Speed;
+  byte car2Lane;
+
+  double currentDistance;
+}
+
+
+
+// --------------INIT--------------
+on start {
+  sendSettings();
+}
+
+
+// --------------FUNCTIONS--------------
+void sendSettings() {
+  displayState.ACC_State = accState;
+  displayState.Speed_Adjusted = accSpeed;
+  displayState.Distance_Adjusted = accDistance;
+  output(displayState);
+}
+
+void sendACCAccelerate() {
+  accAccelerate.PedalTravel_ACC_Accelerate = 1;
+  output(accAccelerate);
+  sendSettings();
+}
+
+void sendACCBrake() {
+  accBrake.PedalTravel_ACC_Brake = 1;
+  output(accBrake);
+  sendSettings();
+}
+
+void sendACCSlowdown() {
+  accSlowdown.PedalTravel_ACC_Slowdown = 1;
+  output(accSlowdown);
+  sendSettings();
+}
+
+
+
+// --------------MESSAGES--------------
+on message ACC_State {
+  if(car1Speed >= 30 && car1Speed <= 180) {
+    accState = this.ACC_State;
+    sendSettings();
+  }
+}
+
+on message Manual_Brake {
+  accState = 0;
+  sendSettings();
+}
+
+on message Manual_Accelerate {
+  accState = 0;
+  sendSettings();
+}
+
+on message Distance_Adjust {
+  if(accState==1) {
+    if(this.Distance_Adjust >= 10 && this.Distance_Adjust <= 30) {
+     accDistance =  this.Distance_Adjust;
+    } 
+  }
+  sendSettings();
+}
+
+on message Speed_Adjust {
+  if(accState == 1) {
+    if(this.Speed_Adjust >= 30 && this.Speed_Adjust <= 180) {
+      accSpeed = this.Speed_Adjust;
+    } 
+  }
+  sendSettings();
+}
+
+on message Car1_State {
+  car1Speed = this.Speed_Car1_Current;
+  car1Lane = this.Lane_Car1_Current;    
+  
+  if(this.Speed_Car1_Current < 25) {
+    accState = 0;
+    accError.ACC_Error = 1;
+    output(accError);
+  }
+  sendSettings();
+}
+
+on message Car2_State {
+  car2Speed = this.Speed_Car2_Current;
+  car2Lane = this.Lane_Car2_Current;
+  sendSettings();
+}
+
+on message Distance_Current {
+  currentDistance = this.Distance_Current;
+  currentDistance = (currentDistance/100)/((double)car1Speed/3.6);
+  
+  write("ACC Distance in sec: %f", (double)accDistance);
+  write("Distance beetwenn cars in sec: %f", currentDistance);
+  
+  if(accState == 1) {
+    // Distance between Car1 and Car2 to short
+    if( (car1Lane == car2Lane) && (currentDistance <= (double)accDistance/10)) { 
+      if(currentDistance <= (0.5 * (double)accDistance/10)) {
+        sendACCBrake();
+      } else {
+      sendACCSlowdown();
+      }
+      
+    } else if(car1Speed > accSpeed) {     // Car is to fast for ACC
+      sendACCSlowdown();
+    } else if(car1Speed < accSpeed) {     // Car is to slow for ACC
+      sendACCAccelerate();        
+    }
+  }
+  sendSettings();
+}
+
+
+
+
+
+
+
