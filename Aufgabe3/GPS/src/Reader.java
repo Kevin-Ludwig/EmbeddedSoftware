@@ -29,6 +29,4 @@ public class Reader {
 		return gpsSignal;
 	}
 
-
-
 }
