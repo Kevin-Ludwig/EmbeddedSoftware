@@ -5,7 +5,6 @@ import java.io.IOException;
 
 public class Reader {
 
-
 	public int[] read(String path) {
 
 		String input = null;
