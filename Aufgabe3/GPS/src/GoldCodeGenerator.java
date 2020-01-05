@@ -28,10 +28,9 @@ public class GoldCodeGenerator {
 		{4, 6}  	// 24
 	};
 
-	int[][] satelliteCodes = new int[24][1023];
 
-
-	public void createSatelliteCodes() {
+	public int[][] createSatelliteCodes() {
+		int[][] satelliteCodes = new int[24][1023];
 
 		for (int i = 0; i < satellites.length; i++) {
 			Register reg1 = new Register(new int[]{1,1,1,1,1,1,1,1,1,1}, new int[]{3,10}, new int[]{10});
@@ -49,8 +48,10 @@ public class GoldCodeGenerator {
 			}
 		}
 		checkRegisters(satelliteCodes);
+		return satelliteCodes;
 	}
 
+	
 	public void checkRegisters(int[][] codes) {			//print only for testing
 		for (int i = 0; i < codes.length; i++) {
 			System.out.print("Code " + i + ": ");

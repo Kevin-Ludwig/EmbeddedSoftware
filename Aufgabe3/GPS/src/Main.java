@@ -7,8 +7,9 @@ public class Main {
 		int[] gpsSignal =  reader.read("res/gps_21.txt");	// reader.read(args[0]) ## cmd: java Main gps_21.txt
 
 		GoldCodeGenerator gc = new GoldCodeGenerator();
-		gc.createSatelliteCodes();
+		int[][] satelliteCodes = gc.createSatelliteCodes();
+
+		Decoder decode = new Decoder(gpsSignal, satelliteCodes);
 
 	}
-
 }
