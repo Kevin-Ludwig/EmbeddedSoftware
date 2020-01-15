@@ -47,7 +47,7 @@ public class GoldCodeGenerator {
 				}
 			}
 		}
-		checkRegisters(satelliteCodes);
+	//	checkRegisters(satelliteCodes);
 		return satelliteCodes;
 	}
 
